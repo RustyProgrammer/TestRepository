@@ -1,16 +1,24 @@
 from random import randint
-from Logger import Logger
-from Common import Common
-from multiprocessing import Queue 
+
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
+
+from wrapper.Logger import Logger
+from wrapper.Common import Common
+from multiprocessing import Queue
 import time
 import json
 
 import sys
+
 sys.path.append(".")
 
+from wrapper.GenericEntity import *
 
-class Client():
+
+class Client(GenericEntity):
     def __init__(self, browser):
+        super(Client, self).__init__()
         self.logger = Logger('Test1_Client.log')
         self.browser = browser
         self.common = Common(self.browser)
@@ -30,29 +38,29 @@ class Client():
 
         if len(tabs) > 1:
             self.logger.Log(str(len(tabs)) + " Len Tabs")
-            index = randint(0, len(tabs)-1)
-            self.logger.Log('[Action] - getRandomTab [Tab]:'+tabs[index])
+            index = randint(0, len(tabs) - 1)
+            self.logger.Log('[Action] - getRandomTab [Tab]:' + tabs[index])
             return tabs[index]
         return None
 
     def getRandomSubtab(self, parent=''):
         subtabs = self.common.getChildrenWhichContains(parent, 'subtab_')
-        self.logger.Log('[Action] - getRandomSubtab  [parent]-'+parent)
+        self.logger.Log('[Action] - getRandomSubtab  [parent]-' + parent)
         if len(subtabs) > 1:
             index = randint(0, len(subtabs) - 1)
             self.logger.Log(
-                '[Action] - getRandomSubtab [subtab]:'+subtabs[index])
+                '[Action] - getRandomSubtab [subtab]:' + subtabs[index])
             return subtabs[index]
         return None
 
     def getRandomMenuItem(self, parent=''):
         menuItems = self.common.getChildrenWhichContains(parent, 'menu_item_')
 
-        self.logger.Log('[Action] - getRandomMenuItem [parent]-'+parent)
+        self.logger.Log('[Action] - getRandomMenuItem [parent]-' + parent)
         if len(menuItems) > 1:
             index = randint(0, len(menuItems) - 1)
             self.logger.Log(
-                '[Action] - getRandomMenuItem [MenuItem]:'+menuItems[index])
+                '[Action] - getRandomMenuItem [MenuItem]:' + menuItems[index])
             return menuItems[index]
         return None
 
@@ -62,7 +70,7 @@ class Client():
         if len(cust) > 1:
             index = randint(0, len(cust) - 1)
             self.logger.Log(
-                '[Action] - getRandomItemCustomization [order_item_customization_group_]:'+cust[index])
+                '[Action] - getRandomItemCustomization [order_item_customization_group_]:' + cust[index])
             return cust[index]
         return None
 
@@ -116,8 +124,8 @@ class Client():
         retry = 200
         while self.common.CheckIfElementIsDisplayed('order_button_pay_button') is 0 and retry > 0:
             time.sleep(1)
-            retry-=1
-            
+            retry -= 1
+
         if self.common.CheckIfElementIsDisplayed('order_button_pay_button') is 1:
             self.common.ClickOn('order_button_pay_button')
             self.logger.Log('[Action] - payTheOrder ')
@@ -137,26 +145,26 @@ class Client():
         retry = 200
         while self.common.CheckIfElementIsDisplayed('payment_confirm') is 0 and retry > 0:
             time.sleep(1)
-            retry-=1
-            
+            retry -= 1
+
         if self.common.CheckIfElementIsDisplayed('payment_confirm') is 1:
             self.common.ClickOn('payment_confirm')
             self.logger.Log('[Action] - confirmPayment ')
-        else:            
+        else:
             self.logger.Log('[Error - Action] - confirmPayment is not possible ')
-            
+
     def finishOrder(self):
         retry = 200
         while self.common.CheckIfElementIsDisplayed('finish_order') is 0 and retry > 0:
             time.sleep(1)
-            retry-=1
-            
+            retry -= 1
+
         if self.common.CheckIfElementIsDisplayed('finish_order') is 1:
             self.common.ClickOn('finish_order')
             self.logger.Log('[Action] - finish_order ')
-        else:            
-            self.logger.Log('[Error - Action] - finish_order is not possible ')        
-               
+        else:
+            self.logger.Log('[Error - Action] - finish_order is not possible ')
+
     def endClientSession(self):
         self.browser.get("http://localhost:8100")
         self.browser.set_window_size(945, 1031)
@@ -173,10 +181,10 @@ class Client():
 
     def randomizeMenuSelection(self, maxNrItems=3):
         iterations = 0
-        
+
         self.logger.Log(maxNrItems)
         while iterations < maxNrItems:
-            self.logger.Log('Number Of Iterations '+str(iterations)+'/'+str(maxNrItems))
+            self.logger.Log('Number Of Iterations ' + str(iterations) + '/' + str(maxNrItems))
             time.sleep(3)
             tabId = self.getRandomTab()
             self.common.ClickOn(tabId)
@@ -196,23 +204,23 @@ class Client():
 
             self.addToOrder()
             iterations = iterations + 1
-            
+
         time.sleep(3)
         self.sendOrder()
         time.sleep(10)
 
     def pay(self):
- 
+
         self.showSidebar()
         self.payTheOrder()
         self.selectPaymentType('Cash')
         self.confirmPayment()
         self.finishOrder()
-        
-    
-    def commandAndPay(self,queue):
+
+    def _orderAndPay(self):
         self.startClientSession()
         self.randomizeMenuSelection(1)
         self.pay()
-        queue.put('finish')
-        
+
+    def orderAndPay(self):
+        self.addAction(self._orderAndPay(), [])

@@ -3,3 +3,4 @@ Log_*
 *.pyc
 *.log
 *.json
+.idea

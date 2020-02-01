@@ -14,12 +14,11 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
-from multiprocessing import Queue 
-sys.path.append('./wrapper')
+from multiprocessing import Queue
 
-from Chef import *
-from Waiter import *
-from Client import *
+from wrapper.Chef import Chef
+from wrapper.Waiter import Waiter
+
 
 
 class Test_1_Suite():
@@ -43,11 +42,11 @@ class Test_1_Suite():
         self.chef_chrome.quit()
 
     def test_Main(self):
+        from wrapper.Client import Client
         self.client = Client(self.client_chrome)
         self.waiter = Waiter(self.waiter_chrome)
         self.chef = Chef(self.chef_chrome)
-        self.q = Queue()     
-        
+        self.q = Queue()
         t1 = Thread(target=self.client.commandAndPay, args=(self.q, ) )
         t2 = Thread(target=self.waiter.serve, args=(self.q, ) )
         t3 = Thread(target=self.chef.cook, args=(self.q, ) )

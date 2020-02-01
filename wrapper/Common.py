@@ -1,4 +1,4 @@
-from Logger import Logger
+from wrapper.Logger import Logger
 import pytest
 import time
 import json
@@ -155,7 +155,7 @@ class Common():
             # print ii.tag_name
             self.logger.Log(ii.get_attribute('id') +
                             " Element randomly selected - Menu_Item")
-            print ii.get_attribute('id')
+           # print ii.get_attribute('id')
         return ids
 
     def getElementsWhichContains(self, partOfId):
