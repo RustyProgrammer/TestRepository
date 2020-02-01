@@ -1,0 +1,5 @@
+workspace.code-workspace
+Log_*
+*.pyc
+*.log
+*.json
