@@ -2,16 +2,9 @@ from random import randint
 from wrapper.Logger import Logger
 from wrapper.Common import Common
 import time
-import json
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.chrome.options import Options
-from multiprocessing import Queue
 
 import sys
 
@@ -24,10 +17,9 @@ EXIST = 1
 
 
 class Waiter(GenericEntity):
-    def __init__(self, browser):
+    def __init__(self):
         super(Waiter, self).__init__()
         self.logger = Logger('Test1_Waiter.log')
-        self.browser = browser
         self.common = Common(self.browser)
         self.username = "waiter"
         self.password = "pass"

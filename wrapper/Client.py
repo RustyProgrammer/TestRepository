@@ -5,9 +5,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from wrapper.Logger import Logger
 from wrapper.Common import Common
-from multiprocessing import Queue
 import time
-import json
 
 import sys
 
@@ -17,10 +15,9 @@ from wrapper.GenericEntity import *
 
 
 class Client(GenericEntity):
-    def __init__(self, browser):
+    def __init__(self):
         super(Client, self).__init__()
         self.logger = Logger('Test1_Client.log')
-        self.browser = browser
         self.common = Common(self.browser)
 
     def removeElementsWhichAreNoChildsFor(self, elements, parent):
@@ -224,3 +221,12 @@ class Client(GenericEntity):
 
     def orderAndPay(self):
         self.addAction(self._orderAndPay(), [])
+
+    def startSession(self):
+        self.addAction( self.startClientSession(), [])
+
+    def orderSomethingRandom(self):
+        self.addAction( self.randomizeMenuSelection(1), [])
+
+    def payTheOrder(self):
+        self.addAction( self.pay(), [])
