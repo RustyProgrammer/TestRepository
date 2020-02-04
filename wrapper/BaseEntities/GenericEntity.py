@@ -1,8 +1,5 @@
 from queue import Queue
 from threading import Thread
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from wrapper.CustomErrorHandler import *
 
 
 class GenericEntity:
@@ -10,11 +7,6 @@ class GenericEntity:
         self._actionQueue = Queue()
         self.thread = None
         self.success = list()
-        self.options = Options()
-        self.options.headless = False
-        self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=self.options)
-        self.browser.set_window_size(1200, 1000)
-        self.browser.error_handler = MyHandler()
 
     def _exec(self):
         while not self._actionQueue.empty():

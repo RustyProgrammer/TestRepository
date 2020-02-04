@@ -1,24 +1,36 @@
 from random import randint
 
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
-from wrapper.Logger import Logger
-from wrapper.Common import Common
+from wrapper.BaseEntities.Logger import Logger
+from wrapper.BaseEntities.Common import Common
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from wrapper.BaseEntities.CustomErrorHandler import *
+
 import time
 
 import sys
 
 sys.path.append(".")
 
-from wrapper.GenericEntity import *
 
-
-class Client(GenericEntity):
+class ClientSelenium:
     def __init__(self):
-        super(Client, self).__init__()
+        self._setBrowser()
         self.logger = Logger('Test1_Client.log')
         self.common = Common(self.browser)
+        self.clientTable = None
+
+    def _setBrowser(self):
+        self.options = Options()
+        self.options.headless = False
+        self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=self.options)
+        self.browser.set_window_size(1200, 1000)
+        self.browser.error_handler = MyHandler()
 
     def removeElementsWhichAreNoChildsFor(self, elements, parent):
         if parent is '' or parent is None:
@@ -117,7 +129,7 @@ class Client(GenericEntity):
         self.common.ClickOn('oder_item_customization_add_to_order')
         self.logger.Log('[Action] - add to order ')
 
-    def payTheOrder(self):
+    def _payTheOrder(self):
         retry = 200
         while self.common.CheckIfElementIsDisplayed('order_button_pay_button') is 0 and retry > 0:
             time.sleep(1)
@@ -139,7 +151,7 @@ class Client(GenericEntity):
         self.logger.Log('[Action] - selectPaymentType [Type] ' + paymentType)
 
     def confirmPayment(self):
-        retry = 200
+        retry = 10
         while self.common.CheckIfElementIsDisplayed('payment_confirm') is 0 and retry > 0:
             time.sleep(1)
             retry -= 1
@@ -150,8 +162,8 @@ class Client(GenericEntity):
         else:
             self.logger.Log('[Error - Action] - confirmPayment is not possible ')
 
-    def finishOrder(self):
-        retry = 200
+    def _finishOrder(self):
+        retry = 10
         while self.common.CheckIfElementIsDisplayed('finish_order') is 0 and retry > 0:
             time.sleep(1)
             retry -= 1
@@ -165,7 +177,7 @@ class Client(GenericEntity):
     def endClientSession(self):
         self.browser.get("http://localhost:8100")
         self.browser.set_window_size(945, 1031)
-        WebDriverWait(self.chrome, 30).until(
+        WebDriverWait(self.browser, 30).until(
             expected_conditions.element_to_be_clickable((By.ID, "welcome-abandon-button")))
         self.browser.find_element_by_id("welcome-abandon-button").click()
         self.logger.Log('[Action] - endClientSession')
@@ -175,6 +187,21 @@ class Client(GenericEntity):
 
         self.common.ClickOn("welcome-start-button")
         self.logger.Log('[Action] - startClientSession')
+        time.sleep(2)
+        self.setTableNumber()
+
+    def setTableNumber(self):
+        elements = self.common.getElementsWhichContains('orderTableNumber_')
+        self.logger.Log('Found OrderTableNumber elements -> ')
+        self.logger.Log(len(elements))
+        if len(elements) == 1:
+            self.logger.Log('Table found' + elements[0])
+            self.clientTable = int(elements[0].replace('orderTableNumber_', ''))
+            self.logger.Log('Client Table is  -> ')
+            self.logger.Log(self.clientTable)
+
+    def getTableNumber(self):
+        return self.clientTable
 
     def randomizeMenuSelection(self, maxNrItems=3):
         iterations = 0
@@ -204,29 +231,18 @@ class Client(GenericEntity):
 
         time.sleep(3)
         self.sendOrder()
-        time.sleep(10)
+        time.sleep(2)
 
     def pay(self):
 
         self.showSidebar()
-        self.payTheOrder()
+        self._payTheOrder()
         self.selectPaymentType('Cash')
         self.confirmPayment()
-        self.finishOrder()
+        #self.finishOrder()
 
     def _orderAndPay(self):
         self.startClientSession()
         self.randomizeMenuSelection(1)
         self.pay()
 
-    def orderAndPay(self):
-        self.addAction(self._orderAndPay(), [])
-
-    def startSession(self):
-        self.addAction( self.startClientSession(), [])
-
-    def orderSomethingRandom(self):
-        self.addAction( self.randomizeMenuSelection(1), [])
-
-    def payTheOrder(self):
-        self.addAction( self.pay(), [])

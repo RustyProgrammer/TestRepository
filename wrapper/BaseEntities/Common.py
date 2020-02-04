@@ -1,4 +1,4 @@
-from wrapper.Logger import Logger
+from wrapper.BaseEntities.Logger import Logger
 import time
 import json
 import sys
@@ -26,6 +26,12 @@ class Common:
             return EXIST
         except:
             return ABSENT
+
+    def getElementById(self, elementID):
+        try:
+            return self.browser.find_element_by_id(elementID)
+        except:
+            return False
 
     def CheckIfElementIsDisplayed(self, elementID):
         try:
