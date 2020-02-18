@@ -11,7 +11,10 @@ class Waiter(WaiterSelenium, GenericEntity):
         self.addAction(self.logIn, [])
 
     def endSession(self):
-        self.addAction(self._LogoutWaiter(), [])
+        self.addAction(self._LogoutWaiter, [])
+
+    def authenticate(self):
+        self.addAction(self.logIn, [])
 
     def _serve(self, tableNumber):
         # ar putea fi un loop aici pentru thread
@@ -24,16 +27,16 @@ class Waiter(WaiterSelenium, GenericEntity):
             time.sleep(5)
 
     def serve(self, tableNumber):
-        self.addAction(self._serve(tableNumber), [])
+        self.addAction(self._serve, [tableNumber])
 
     def _assignTable(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_assign_to_me_')
 
     def assignTable(self, tableNumber):
-        self.addAction(self._assignTable(tableNumber), [])
+        self.addAction(self._assignTable, [tableNumber])
 
     def takeTask(self, tableNumber):
-        self.addAction(self._takeTask(tableNumber), [])
+        self.addAction(self._takeTask, [tableNumber])
 
     def _takeTask(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_verified_')
@@ -47,10 +50,10 @@ class Waiter(WaiterSelenium, GenericEntity):
 
 
     def confirmTaskToChef(self, tableNumber):
-        self.addAction(self._confirmTaskToChef(tableNumber), [])
+        self.addAction(self._confirmTaskToChef, [tableNumber])
 
     def confirmPayment(self, tableNumber):
-        self.addAction(self._confirmTaskToChef(tableNumber), [])
+        self.addAction(self._confirmTaskToChef, [tableNumber])
 
     def confirmTaskToClient(self, tableNumber):
-        self.addAction(self._confirmTaskToClient(tableNumber), [])
+        self.addAction(self._confirmTaskToClient, [tableNumber])

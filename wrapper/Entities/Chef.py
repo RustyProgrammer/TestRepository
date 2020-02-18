@@ -12,7 +12,10 @@ class Chef(WaiterSelenium, GenericEntity):
         self.addAction(self.logIn, [])
 
     def endSession(self):
-        self.addAction(self._LogoutWaiter(), [])
+        self.addAction(self._LogoutWaiter, [])
+
+    def authenticate(self):
+        self.addAction(self.logIn, [])
 
     def _cook(self):
         self._logIn()
@@ -25,9 +28,9 @@ class Chef(WaiterSelenium, GenericEntity):
             count -= 1
             time.sleep(5)
 
-    #Threaded Method
+    # Threaded Method
     def cook(self):
-        self.addAction(self._cook(), [])
+        self.addAction(self._cook, [])
 
     def _takeTask(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_acknowledge_')
@@ -36,7 +39,7 @@ class Chef(WaiterSelenium, GenericEntity):
         self.checkAndClick(tableNumber, 'task_done_')
 
     def takeTask(self, tableNumber):
-        self.addAction(self._takeTask(tableNumber), [])
+        self.addAction(self._takeTask, [tableNumber])
 
     def sendToWaiter(self, tableNumber):
-        self.addAction(self._sendToWaiter(tableNumber), [])
+        self.addAction(self._sendToWaiter, [tableNumber])

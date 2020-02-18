@@ -15,11 +15,11 @@ class GenericEntity:
 
     def addAction(self, action, args):
         self._actionQueue.put((action, args))
-        if self.thread is not None and not self.thread.is_alive():
+        if self.thread is  None or not self.thread.is_alive():
             self.thread = Thread(target=self._exec)
             self.thread.start()
 
     def stop(self):
         if self.thread is not None and self.thread.is_alive():
             self.thread.join()
-        self.browser.quit()
+
