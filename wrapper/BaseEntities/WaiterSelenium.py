@@ -122,7 +122,8 @@ class WaiterSelenium:
         time.sleep(2)
         taskCard = self.common.getElementById(taskCardId)
         self.logger.Log('Found TaskCardId -> ' + taskCardId + '  ->Searching for #' + dataToSearch)
-        if dataToSearch in taskCard.get_attribute('innerHTML'):
+        innerHtml = taskCard.get_attribute('innerHTML')
+        if dataToSearch in innerHtml:
             self.logger.Log('Found ' + dataToSearch)
             return True
         return False
@@ -136,24 +137,28 @@ class WaiterSelenium:
               task_acknowledge_   OR
               task_done_
               """
-        time.sleep(2)
-        retry = 3
+        self.logger.Log('Checking and clicking table number -> ' + str(tableNumber) + " and action -> "+ action)
+        time.sleep(1)
+        retry = 10
         while retry > 0:
+            self.logger.Log('Try to Check and click ')
             # This method aim to get         ##action## type task from specified table
             taskCard = self._getTaskCardFromTable(tableNumber)
-            buttonId = action + taskCard.replace('taskCardDiv_', '')
+            if taskCard is not None:
+                buttonId = action + taskCard.replace('taskCardDiv_', '')
             if taskCard is not None and self.checkIfTaskCardContains(taskCard, buttonId):
                 self.logger.Log('Found ' + buttonId + ' => clicking on it')
                 self.common.ClickOn(buttonId)
                 self.logger.Log('Clicked ' + buttonId + ' => assigned')
                 return True
+            self.logger.Log('Checking and clicking ' + str(11 - retry ) + '/10')
             retry -= 1
             time.sleep(2)
         assert 'Action don\'t exist. Action searched for ' + action
 
     # search for specific tables
     def _getTaskCardFromTable(self, tableNumber):
-        time.sleep(2)
+        time.sleep(1)
         # get all tasks to iterate through them
         tableNumbers = self.getAllTableNumbers()
         if tableNumbers is not None:
@@ -167,7 +172,7 @@ class WaiterSelenium:
                     self.logger.Log('Found task for table' + str(tableNumber) + ' # Task -> ' + id)
                     return 'taskCardDiv_' + id
         else:
-            self.logger.Log('AvailableTasks is None')
+            self.logger.Log('AvailableTasks is None  {_getTaskCardFromTable}')
         return None
 
     def _clickOnTaskForATable(self, taskType, taskCardNumber):

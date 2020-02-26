@@ -20,7 +20,11 @@ class Client(ClientSelenium, GenericEntity):
         self.addAction(self.randomizeMenuSelection, [1])
 
     def payTheOrder(self):
-        self.addAction(self.pay, [])
+        self.pay()
+        #self.addAction(self.pay, [])
 
     def finishOrder(self):
         self.addAction(self._finishOrder, [])
+
+    def SaveTableNumber(self):
+        self.addAction(self.getTableNumber(),[])

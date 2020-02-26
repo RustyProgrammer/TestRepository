@@ -34,13 +34,15 @@ class Common:
             return False
 
     def CheckIfElementIsDisplayed(self, elementID):
+        result = 0
         try:
             if self.browser.find_element_by_id(elementID).is_displayed():
+                result = 1
+        finally:
+            if result is 1:
                 return EXIST
             else:
                 return ABSENT
-        except:
-            return ABSENT
 
     def GetAllElementsWhichContains(self, PartOfId):
         try:
@@ -188,3 +190,16 @@ class Common:
     def randomString(self, stringLength=10):
         letters = string.ascii_lowercase
         return 'Random String : '.join(random.choice(letters) for i in range(stringLength))
+
+
+    def waitForElementToBeDisplayed(self, element):
+        self.retry = 30
+        self.logger.Log('waitForElementToBeDisplaied first entry for element '+element)
+        while self.common.CheckIfElementIsDisplayed(element) is 0 and self.retry > 0:
+            self.logger.Log('waitForElementToBeDisplaied retry  nr ' + (31-self.retry)+"/30 x 3sec  for element " +element)
+            time.sleep(3)
+            self.retry -= 1
+
+        if self.retry is 0:
+            return False
+        return True

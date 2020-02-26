@@ -10,7 +10,7 @@ from wrapper.BaseEntities.Common import Common
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from wrapper.BaseEntities.CustomErrorHandler import *
-
+from wrapper.config import *
 import time
 
 import sys
@@ -130,12 +130,8 @@ class ClientSelenium:
         self.logger.Log('[Action] - add to order ')
 
     def _payTheOrder(self):
-        retry = 200
-        while self.common.CheckIfElementIsDisplayed('order_button_pay_button') is 0 and retry > 0:
-            time.sleep(1)
-            retry -= 1
-
-        if self.common.CheckIfElementIsDisplayed('order_button_pay_button') is 1:
+        self.result = self.common.waitForElementToBeDisplayed('order_button_pay_button')
+        if self.result is True:
             self.common.ClickOn('order_button_pay_button')
             self.logger.Log('[Action] - payTheOrder ')
         else:
@@ -153,7 +149,7 @@ class ClientSelenium:
     def confirmPayment(self):
         retry = 10
         while self.common.CheckIfElementIsDisplayed('payment_confirm') is 0 and retry > 0:
-            time.sleep(1)
+            time.sleep(3)
             retry -= 1
 
         if self.common.CheckIfElementIsDisplayed('payment_confirm') is 1:
@@ -187,20 +183,25 @@ class ClientSelenium:
 
         self.common.ClickOn("welcome-start-button")
         self.logger.Log('[Action] - startClientSession')
-        time.sleep(2)
-        self.setTableNumber()
+
 
     def setTableNumber(self):
+        time.sleep(1)
+        self.showSidebar()
+        time.sleep(1)
         elements = self.common.getElementsWhichContains('orderTableNumber_')
         self.logger.Log('Found OrderTableNumber elements -> ')
         self.logger.Log(len(elements))
         if len(elements) == 1:
-            self.logger.Log('Table found' + elements[0])
+            self.logger.Log('Table found ' + elements[0])
             self.clientTable = int(elements[0].replace('orderTableNumber_', ''))
+            Config.currentTableNumber = self.clientTable
             self.logger.Log('Client Table is  -> ')
             self.logger.Log(self.clientTable)
 
     def getTableNumber(self):
+        time.sleep(3)
+        self.logger.Log('Active Table Number is  -> ' + str(self.clientTable))
         return self.clientTable
 
     def randomizeMenuSelection(self, maxNrItems=3):
