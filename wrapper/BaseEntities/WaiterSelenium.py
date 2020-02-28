@@ -29,7 +29,7 @@ class WaiterSelenium:
         self.options = Options()
         self.options.headless = False
         self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=self.options)
-        self.browser.set_window_size(1200, 1000)
+        self.browser.set_window_size(500, 500)
         self.browser.error_handler = MyHandler()
 
     def _SetUsername(self, username):
@@ -137,7 +137,7 @@ class WaiterSelenium:
               task_acknowledge_   OR
               task_done_
               """
-        self.logger.Log('Checking and clicking table number -> ' + str(tableNumber) + " and action -> "+ action)
+        self.logger.Log('Checking and clicking table number -> ' + str(tableNumber) + " and action -> " + action)
         time.sleep(1)
         retry = 10
         while retry > 0:
@@ -147,10 +147,12 @@ class WaiterSelenium:
             if taskCard is not None:
                 buttonId = action + taskCard.replace('taskCardDiv_', '')
             if taskCard is not None and self.checkIfTaskCardContains(taskCard, buttonId):
+                goToTableResult = self.checkIfTaskCardContains(taskCard, 'GO_TO_TABLE')
                 self.logger.Log('Found ' + buttonId + ' => clicking on it')
                 self.common.ClickOn(buttonId)
                 self.logger.Log('Clicked ' + buttonId + ' => assigned')
-                return True
+                if goToTableResult is False:
+                    return True
             self.logger.Log('Checking and clicking ' + str(11 - retry ) + '/10')
             retry -= 1
             time.sleep(2)
@@ -166,8 +168,9 @@ class WaiterSelenium:
             self.logger.Log(len(tableNumbers))
             # take action for every task type
             for table in tableNumbers:
-                self.logger.Log(table.get_attribute('id'))
-                id = table.get_attribute('id').replace('taskTableNumber_', '')
+                tableId = table.get_attribute('id')
+                self.logger.Log(tableId)
+                id = tableId.replace('taskTableNumber_', '')
                 if str(tableNumber) in table.get_attribute('innerHTML'):
                     self.logger.Log('Found task for table' + str(tableNumber) + ' # Task -> ' + id)
                     return 'taskCardDiv_' + id

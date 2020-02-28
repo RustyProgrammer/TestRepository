@@ -49,6 +49,7 @@ class Waiter(WaiterSelenium, GenericEntity):
 
     def _confirmTaskToChef(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_acknowledge_')
+        self.checkAndClick(tableNumber, 'task_done_')
 
     def _confirmTaskToClient(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_done_')

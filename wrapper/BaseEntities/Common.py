@@ -11,9 +11,6 @@ import string
 
 sys.path.append('.')
 
-ABSENT = 0
-EXIST = 1
-
 
 class Common:
     def __init__(self, browser):
@@ -23,9 +20,9 @@ class Common:
     def CheckIfElementExists(self, elementID):
         try:
             self.browser.find_element_by_id(elementID)
-            return EXIST
+            return 1
         except:
-            return ABSENT
+            return 0
 
     def getElementById(self, elementID):
         try:
@@ -40,9 +37,9 @@ class Common:
                 result = 1
         finally:
             if result is 1:
-                return EXIST
+                return 1
             else:
-                return ABSENT
+                return 0
 
     def GetAllElementsWhichContains(self, PartOfId):
         try:
@@ -88,14 +85,19 @@ class Common:
 
         while retry < 3:
             time.sleep(1)
-            if self.CheckIfElementExists(elementId) is not ABSENT:
+            if self.CheckIfElementExists(elementId) is not 0:
                 self.logger.Log(
                     '[Action] [Waiting to be clickable] on ' + elementId)
                 # WebDriverWait(self.browser, 30).until(
                 #     expected_conditions.element_to_be_clickable((By.ID, elementId)))
                 while times > 0:
                     self.logger.Log('[Action] [Click] on ' + elementId)
-                    self.browser.find_element_by_id(elementId).click()
+                    try:
+                        while self.CheckIfElementExists(elementId) is 0:
+                            self.logger.Log("waiting for element to become available " +elementId)
+                        self.browser.find_element_by_id(elementId).click()
+                    except:
+                        self.browser.find_element_by_id(elementId).click()
                     times -= 1
                     time.sleep(1)
                 break
@@ -112,7 +114,7 @@ class Common:
 
     def SetUsername(self, username):
         elementId = 'waiter_login_username'
-        if self.CheckIfElementExists(elementId) is not ABSENT:
+        if self.CheckIfElementExists(elementId) is not 0:
             self.logger.Log(elementId + "- Waiting to be clickable")
             WebDriverWait(self.browser, 30).until(
                 expected_conditions.element_to_be_clickable((By.ID, elementId)))
@@ -126,7 +128,7 @@ class Common:
 
     def SetPassword(self, password):
         elementId = 'waiter_login_password'
-        if self.CheckIfElementExists(elementId) is not ABSENT:
+        if self.CheckIfElementExists(elementId) is not 0:
             self.logger.Log(elementId + "- Waiting to be clickable")
             WebDriverWait(self.browser, 30).until(
                 expected_conditions.element_to_be_clickable((By.ID, elementId)))
@@ -180,7 +182,7 @@ class Common:
         for element in childs:
             self.logger.Log('[Action] [getElementsWhichContains ] [Parent]' + parentEl.text + ' [child] ' + element +
                             " IDs Found - need to be checked if it is child")
-            if partOfId in element and self.CheckIfElementIsDisplayed(element) is EXIST:
+            if partOfId in element and self.CheckIfElementIsDisplayed(element) is 1:
                 self.logger.Log(
                     '[Action] [getElementsWhichContains ] [Parent]' + parentEl.text + ' [child] ' + element +
                     " IDs Found")
@@ -191,12 +193,12 @@ class Common:
         letters = string.ascii_lowercase
         return 'Random String : '.join(random.choice(letters) for i in range(stringLength))
 
-
     def waitForElementToBeDisplayed(self, element):
         self.retry = 30
-        self.logger.Log('waitForElementToBeDisplaied first entry for element '+element)
-        while self.common.CheckIfElementIsDisplayed(element) is 0 and self.retry > 0:
-            self.logger.Log('waitForElementToBeDisplaied retry  nr ' + (31-self.retry)+"/30 x 3sec  for element " +element)
+        self.logger.Log('waitForElementToBeDisplaied first entry for element ' + element)
+        while self.CheckIfElementIsDisplayed(element) is 0 and self.retry > 0:
+            self.logger.Log(
+                'waitForElementToBeDisplaied retry  nr ' + (31 - self.retry) + "/30 x 3sec  for element " + element)
             time.sleep(3)
             self.retry -= 1
 
