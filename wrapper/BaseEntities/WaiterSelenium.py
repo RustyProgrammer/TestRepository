@@ -128,7 +128,7 @@ class WaiterSelenium:
             return True
         return False
 
-    def checkAndClick(self, tableNumber, action):
+    def checkAndClick(self, tableNumber, action, activity=""):
         """
               :param tableNumber: (ex) 11
               :param action: could be
@@ -139,11 +139,11 @@ class WaiterSelenium:
               """
         self.logger.Log('Checking and clicking table number -> ' + str(tableNumber) + " and action -> " + action)
         time.sleep(1)
-        retry = 10
+        retry = 15
         while retry > 0:
             self.logger.Log('Try to Check and click ')
             # This method aim to get         ##action## type task from specified table
-            taskCard = self._getTaskCardFromTable(tableNumber)
+            taskCard = self._getTaskCardFromTable(tableNumber, activity)
             if taskCard is not None:
                 buttonId = action + taskCard.replace('taskCardDiv_', '')
             if taskCard is not None and self.checkIfTaskCardContains(taskCard, buttonId):
@@ -153,13 +153,13 @@ class WaiterSelenium:
                 self.logger.Log('Clicked ' + buttonId + ' => assigned')
                 if goToTableResult is False:
                     return True
-            self.logger.Log('Checking and clicking ' + str(11 - retry ) + '/10')
+            self.logger.Log('Checking and clicking ' + str(16 - retry ) + '/15')
             retry -= 1
             time.sleep(2)
         assert 'Action don\'t exist. Action searched for ' + action
 
     # search for specific tables
-    def _getTaskCardFromTable(self, tableNumber):
+    def _getTaskCardFromTable(self, tableNumber, activity=""):
         time.sleep(1)
         # get all tasks to iterate through them
         tableNumbers = self.getAllTableNumbers()
@@ -167,13 +167,23 @@ class WaiterSelenium:
             self.logger.Log("availableTasks -> ")
             self.logger.Log(len(tableNumbers))
             # take action for every task type
-            for table in tableNumbers:
-                tableId = table.get_attribute('id')
-                self.logger.Log(tableId)
-                id = tableId.replace('taskTableNumber_', '')
-                if str(tableNumber) in table.get_attribute('innerHTML'):
-                    self.logger.Log('Found task for table' + str(tableNumber) + ' # Task -> ' + id)
-                    return 'taskCardDiv_' + id
+            try:
+                for table in tableNumbers:
+
+                    tableId = table.get_attribute('id')
+                    self.logger.Log('Waiter TableID 1 ' + tableId)
+                    id = tableId.replace('taskTableNumber_', '')
+                    self.logger.Log('Waiter TableID 2 ' + tableId)
+                    innerHtml = table.get_attribute('innerHTML')
+                    self.logger.Log('Waiter TableID 3 ' + tableId)
+                    self.logger.Log(innerHtml)
+
+                    if str(tableNumber) in innerHtml and activity in innerHtml:
+                        self.logger.Log('Found task for table' + str(tableNumber) + ' # Task -> ' + id)
+                        return 'taskCardDiv_' + id
+            except ValueError:
+                self.logger.Log('----===----[Exception] ' + ValueError.message)
+                return None
         else:
             self.logger.Log('AvailableTasks is None  {_getTaskCardFromTable}')
         return None

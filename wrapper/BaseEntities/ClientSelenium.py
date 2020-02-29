@@ -130,7 +130,10 @@ class ClientSelenium:
         self.logger.Log('[Action] - add to order ')
 
     def _payTheOrder(self):
+
+        self.logger.Log('[Action] - payTheOrder ')
         self.result = self.common.waitForElementToBeDisplayed('order_button_pay_button')
+        self.logger.Log('[Action][order_button_pay_button] - payTheOrder  waiting finished with result ' + str(self.result))
         if self.result is True:
             self.common.ClickOn('order_button_pay_button')
             self.logger.Log('[Action] - payTheOrder ')
@@ -159,9 +162,9 @@ class ClientSelenium:
             self.logger.Log('[Error - Action] - confirmPayment is not possible ')
 
     def _finishOrder(self):
-        retry = 10
+        retry = 20
         while self.common.CheckIfElementIsDisplayed('finish_order') is 0 and retry > 0:
-            time.sleep(1)
+            time.sleep(2)
             retry -= 1
 
         if self.common.CheckIfElementIsDisplayed('finish_order') is 1:

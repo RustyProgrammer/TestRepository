@@ -47,6 +47,6 @@ class Test_1_Suite():
 
         self.client.finishOrder()
 
-       # while threading.active_count() > 0:
+        while threading.active_count() > 0:
             # ... look for new requests to handle ...
-          #  time.sleep(1)
+            time.sleep(1)

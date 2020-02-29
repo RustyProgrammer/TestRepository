@@ -32,8 +32,10 @@ class Common:
 
     def CheckIfElementIsDisplayed(self, elementID):
         result = 0
+        self.logger.Log("[debug][method > CheckIfElementIsDisplayed] " + elementID)
         try:
-            if self.browser.find_element_by_id(elementID).is_displayed():
+            element = self.browser.find_element_by_id(elementID)
+            if element.is_displayed():
                 result = 1
         finally:
             if result is 1:
@@ -82,8 +84,9 @@ class Common:
             return None
 
         retry = 0
-
-        while retry < 3:
+        self.logger.Log(
+            '[Action] [ClickOn] on ' + elementId)
+        while retry < 15:
             time.sleep(1)
             if self.CheckIfElementExists(elementId) is not 0:
                 self.logger.Log(
@@ -93,8 +96,13 @@ class Common:
                 while times > 0:
                     self.logger.Log('[Action] [Click] on ' + elementId)
                     try:
-                        while self.CheckIfElementExists(elementId) is 0:
+
+                        while self.CheckIfElementExists(elementId) is 0 :
                             self.logger.Log("waiting for element to become available " +elementId)
+                            time.sleep(1)
+                        while self.browser.find_element_by_id(elementId).is_enabled() is False:
+                            self.logger.Log("element disabled... waiting to be enabeld")
+                            time.sleep(1)
                         self.browser.find_element_by_id(elementId).click()
                     except:
                         self.browser.find_element_by_id(elementId).click()
@@ -109,7 +117,7 @@ class Common:
                 else:
                     self.logger.Log("NONE- does not exist - retry number " +
                                     str(retry) + "/3")
-                time.sleep(5)
+                time.sleep(3)
         return None
 
     def SetUsername(self, username):
