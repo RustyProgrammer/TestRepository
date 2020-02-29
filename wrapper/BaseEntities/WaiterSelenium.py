@@ -30,7 +30,7 @@ class WaiterSelenium:
         self.options.headless = False
         self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=self.options)
         self.browser.set_window_size(500, 500)
-        self.browser.error_handler = MyHandler()
+        # self.browser.error_handler = MyHandler()
 
     def _SetUsername(self, username):
         time.sleep(1)
@@ -113,10 +113,14 @@ class WaiterSelenium:
 
     def getAllTableNumbers(self):
         # task_assign_to_me
+        tableNumbers_innerHtml = {}
         tableNumber = self.common.GetAllElementsWhichContains('taskTableNumber_')
-        if len(tableNumber) > 0:
-            return tableNumber
-        return None
+        for table in tableNumber:
+            id = table.get_attribute('id')
+            taskCardId = id.replace("taskTableNumber", "taskCardDiv")
+            tableNumbers_innerHtml[id] =  self.browser.find_element_by_id(taskCardId).get_attribute('innerHTML')
+
+        return tableNumbers_innerHtml
 
     def checkIfTaskCardContains(self, taskCardId, dataToSearch):
         time.sleep(2)
@@ -153,7 +157,7 @@ class WaiterSelenium:
                 self.logger.Log('Clicked ' + buttonId + ' => assigned')
                 if goToTableResult is False:
                     return True
-            self.logger.Log('Checking and clicking ' + str(16 - retry ) + '/15')
+            self.logger.Log('Checking and clicking ' + str(16 - retry) + '/15')
             retry -= 1
             time.sleep(2)
         assert 'Action don\'t exist. Action searched for ' + action
@@ -168,13 +172,12 @@ class WaiterSelenium:
             self.logger.Log(len(tableNumbers))
             # take action for every task type
             try:
-                for table in tableNumbers:
-
-                    tableId = table.get_attribute('id')
+                for key, value in tableNumbers.items():
+                    tableId = key
                     self.logger.Log('Waiter TableID 1 ' + tableId)
                     id = tableId.replace('taskTableNumber_', '')
                     self.logger.Log('Waiter TableID 2 ' + tableId)
-                    innerHtml = table.get_attribute('innerHTML')
+                    innerHtml = value
                     self.logger.Log('Waiter TableID 3 ' + tableId)
                     self.logger.Log(innerHtml)
 

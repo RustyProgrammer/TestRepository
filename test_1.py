@@ -46,7 +46,7 @@ class Test_1_Suite():
         self.waiter.confirmPayment(self.tableNumber)
 
         self.client.finishOrder()
-
-        while threading.active_count() > 0:
-            # ... look for new requests to handle ...
-            time.sleep(1)
+        #self.waiter.clearTable()
+        # while threading.active_count() > 0:
+        #     # ... look for new requests to handle ...
+        #     time.sleep(1)

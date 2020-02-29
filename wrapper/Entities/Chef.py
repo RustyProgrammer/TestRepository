@@ -17,8 +17,8 @@ class Chef(WaiterSelenium, GenericEntity):
         #self.addAction(self._LogoutWaiter, [])
 
     def authenticate(self):
-        #self.logIn()
-        self.addAction(self.logIn, [])
+        self.logIn()
+        #self.addAction(self.logIn, [])
 
     def _cook(self):
         self._logIn()
@@ -33,8 +33,8 @@ class Chef(WaiterSelenium, GenericEntity):
 
     # Threaded Method
     def cook(self):
-        #self._cook()
-        self.addAction(self._cook, [])
+        self._cook()
+        #self.addAction(self._cook, [])
 
     def _takeTask(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_acknowledge_')

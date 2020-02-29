@@ -30,7 +30,7 @@ class ClientSelenium:
         self.options.headless = False
         self.browser = webdriver.Chrome('/usr/lib/chromium-browser/chromedriver', options=self.options)
         self.browser.set_window_size(1200, 1000)
-        self.browser.error_handler = MyHandler()
+        #self.browser.error_handler = MyHandler()
 
     def removeElementsWhichAreNoChildsFor(self, elements, parent):
         if parent is '' or parent is None:
@@ -239,7 +239,7 @@ class ClientSelenium:
 
     def pay(self):
 
-        self.showSidebar()
+        #self.showSidebar()
         self._payTheOrder()
         self.selectPaymentType('Cash')
         self.confirmPayment()

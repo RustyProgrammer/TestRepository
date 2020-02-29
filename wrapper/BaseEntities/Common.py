@@ -48,8 +48,8 @@ class Common:
             elements = self.browser.find_elements_by_css_selector(
                 '[id*="%s"]' % PartOfId)
             return elements
-        except:
-            self.logger.Log("GetAllElementsWhichContains- NONE")
+        except ValueError:
+            self.logger.Log("GetAllElementsWhichContains- NONE -> ErrorMessage >"+ValueError.message)
             return None
 
     def GetRandomOneOfAllElementsWhichContains(self, PartOfId):

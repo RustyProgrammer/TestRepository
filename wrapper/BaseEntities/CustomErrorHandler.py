@@ -12,4 +12,3 @@ class MyHandler(ErrorHandler):
             e.stacktrace = None
             # PhantomJS specific line:
             e.msg = json.loads(e.msg)['errorMessage']
-            raise

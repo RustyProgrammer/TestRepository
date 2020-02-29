@@ -8,16 +8,16 @@ class Waiter(WaiterSelenium, GenericEntity):
         GenericEntity.__init__(self)
 
     def startSession(self):
-        #self.logIn()
-        self.addAction(self.logIn, [])
+        self.logIn()
+        #self.addAction(self.logIn, [])
 
     def endSession(self):
-        #self._LogoutWaiter()
-        self.addAction(self._LogoutWaiter, [])
+        self._LogoutWaiter()
+        #self.addAction(self._LogoutWaiter, [])
 
     def authenticate(self):
-        #self.logIn()
-        self.addAction(self.logIn, [])
+        self.logIn()
+        #self.addAction(self.logIn, [])
 
     def _serve(self, tableNumber):
         # ar putea fi un loop aici pentru thread
@@ -30,43 +30,43 @@ class Waiter(WaiterSelenium, GenericEntity):
             time.sleep(5)
 
     def serve(self, tableNumber):
-        #self._serve(tableNumber)
-        self.addAction(self._serve, [tableNumber])
+        self._serve(tableNumber)
+        #self.addAction(self._serve, [tableNumber])
 
     def _assignTable(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_assign_to_me_')
 
     def assignTable(self, tableNumber):
-        #self._assignTable(tableNumber)
-        self.addAction(self._assignTable, [tableNumber])
+        self._assignTable(tableNumber)
+        #self.addAction(self._assignTable, [tableNumber])
 
     def sendToChef(self, tableNumber):
-        #self._sendToChef(tableNumber)
-        self.addAction(self._sendToChef, [tableNumber])
+        self._sendToChef(tableNumber)
+        #self.addAction(self._sendToChef, [tableNumber])
 
     def _sendToChef(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_verified_')
 
     def _confirmTaskToChef(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_acknowledge_', 'DELIVER_TO_TABLE') #DELIVER_TO_TABLE
-        self.checkAndClick(tableNumber, 'task_done_', 'DELIVER_TO_TABLE')#DELIVER_TO_TABLE
+        #self.checkAndClick(tableNumber, 'task_done_', 'DELIVER_TO_TABLE')#DELIVER_TO_TABLE
 
     def _confirmTaskPayment(self, tableNumber):
         self.checkAndClick(tableNumber, 'task_acknowledge_', 'PAYMENT') #PAYMENT
         self.checkAndClick(tableNumber, 'task_done_', 'PAYMENT')#PAYMENT
 
     def _confirmTaskToClient(self, tableNumber):
-        self.checkAndClick(tableNumber, 'task_acknowledge_', 'DELIVER_TO_TABLE') #DELIVER_TO_TABLE
+        #self.checkAndClick(tableNumber, 'task_acknowledge_', 'DELIVER_TO_TABLE') #DELIVER_TO_TABLE
         self.checkAndClick(tableNumber, 'task_done_', 'DELIVER_TO_TABLE')#DELIVER_TO_TABLE
 
     def confirmTaskToChef(self, tableNumber):
-        #self._confirmTaskToChef(tableNumber)
-        self.addAction(self._confirmTaskToChef, [tableNumber])
+        self._confirmTaskToChef(tableNumber)
+        #self.addAction(self._confirmTaskToChef, [tableNumber])
 
     def confirmPayment(self, tableNumber):
-        #self._confirmTaskToChef(tableNumber)
-        self.addAction(self._confirmTaskPayment, [tableNumber])
+        self._confirmTaskPayment(tableNumber)
+        #self.addAction(self._confirmTaskPayment, [tableNumber])
 
     def confirmTaskToClient(self, tableNumber):
-        #self._confirmTaskToClient(tableNumber)
-        self.addAction(self._confirmTaskToClient, [tableNumber])
+        self._confirmTaskToClient(tableNumber)
+        #self.addAction(self._confirmTaskToClient, [tableNumber])
