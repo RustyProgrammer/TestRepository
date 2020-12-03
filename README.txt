@@ -7,3 +7,4 @@ sudo pip3 install selenium  #For Python 3
 
 File->Settings->Tools->Python Integrated Tools-> Click on fix button for pytestMihaiFLorea
 and ana are mere
+17:56 change by MN
